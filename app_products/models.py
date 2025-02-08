@@ -7,7 +7,7 @@ class ProductsModel(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name="posts")
     slug = models.SlugField(unique=True, null=True)
     title = models.CharField(max_length=255)
-    body = models.TextField()
+    quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 
