@@ -19,4 +19,41 @@ def products_view(request):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(["GET", "PUT", "DELETE", "PATCH"])
+def products_detail_view(request, slug):
+    response = {"success": True}
+    try:
+        post = ProductsModel.objects.get(slug=slug)
+    except ProductsModel.DoesNotExist:
+        response["success"] = False
+        response["detail"] = "Post does not exists"
+        return Response(data=response, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = ProductsModel(post)
+        response["data"] = serializer.data
+        return Response(data=response, status=status.HTTP_200_OK)
+
+    elif request.method == "PUT":
+        serializer = ProductsModel(post, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            response["data"] = serializer.data
+            return Response(data=response, status=status.HTTP_202_ACCEPTED)
+
+    elif request.method == "PATCH":
+        serializer = ProductsModel(post, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            response["data"] = serializer.data
+            return Response(data=response, status=status.HTTP_202_ACCEPTED)
+
+    elif request.method == "DELETE":
+        post.delete()
+        response["detail"] = "Post is deleted"
+        return Response(data=response, status=status.HTTP_204_NO_CONTENT)
+
+
 

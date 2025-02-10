@@ -10,6 +10,16 @@ class ProductsModel(models.Model):
     quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, **kwargs):
+        if not self.slug:
+            original_slug = slugify(self.title)
+            slug = original_slug
+            count = 0
+            while ProductsModel.objects.filter(slug=slug).exists():
+                slug = f"{original_slug}-{count}"
+                count += 1
+            self.slug = slug
+        super().save(**kwargs)
 
     def __str__(self):
         return self.title
