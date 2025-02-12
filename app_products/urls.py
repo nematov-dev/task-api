@@ -6,6 +6,11 @@ from app_products import views
 app_name = 'products'
 
 urlpatterns = [
-    path('',views.products_view,name='list'),
-    path('<slug:slug>/',views.products_detail_view,name='detail'),
+    #Class View
+    path('',views.ProductListCreateAPIView.as_view(),name='list'),
+    path('<slug:slug>/',views.ProductDetailApiView.as_view(),name='detail'),
+
+    # Func view
+    # path('',views.products_view,name='list'),
+    # path('<slug:slug>/',views.products_detail_view,name='detail'),
 ]
